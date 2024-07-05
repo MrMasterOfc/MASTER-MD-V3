@@ -14,16 +14,16 @@
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
 <p align="center">
-   <a href="https://github.com/MrMasterOfc/MASTER-Md-V3/fork">
-    <img src="https://img.shields.io/github/forks/MrMasterOfc/MASTER-Md-V3?style=flat-square&logo=github&color=darkred">
+   <a href="https://github.com/MrMasterOfc/MASTER-MD-V3/fork">
+    <img src="https://img.shields.io/github/forks/MrMasterOfc/MASTER-MD-V3?style=flat-square&logo=github&color=darkred">
    </a>
-  <a href="https://github.com/MrMasterOfc/MASTER-Md-V3/stargazers"> 
-     <img src="https://img.shields.io/github/stars/MrMasterOfc/MASTER-Md-V3?style=flat-square&logo=github&color=darkred">
+  <a href="https://github.com/MrMasterOfc/MASTER-MD-V3/stargazers"> 
+     <img src="https://img.shields.io/github/stars/MrMasterOfc/MASTER-MD-V3?style=flat-square&logo=github&color=darkred">
  </a>
 
 
 
-  <a aria-label="Suhail_Md is free to use" href="https://youtube.com/@sahanmaduwantha2006" target="_blank">
+  <a aria-label="MASTER_MD is free to use" href="https://youtube.com/@sahanmaduwantha2006" target="_blank">
     <img alt="MrMasterOfc Yt" src="https://img.shields.io/youtube/channel/subscribers/UCDB6GZMdSfsmPN9gqxxqnMQ" target="_blank" />
   </a>
 
