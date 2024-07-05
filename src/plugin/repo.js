@@ -14,7 +14,22 @@ const alive = async (m, Matrix) => {
 
   const uptimeMessage = `
 _________________________________________
-> ⚖:DEVELOPER: 👨‍💻MR MASTER OFC👨‍💻
+*🔰GitHub Profile - @MrMasterOfc*
+*🔰Name: 𝙎𝙖𝙝𝙖𝙣 𝙈𝙖𝙙𝙪𝙬𝙖𝙣𝙩𝙝𝙖👨‍💻*
+*🔰Username:* @MrMasterOfc
+*🔰Bio: 𝐌𝐚𝐬𝐭𝐞𝐫_𝐲𝐨𝐮𝐫_𝐌𝐢𝐧𝐝*
+*𝐌𝐚𝐬𝐭𝐞𝐫_𝐲𝐨𝐮𝐫_𝐋𝐢𝐟𝐞*
+*@𝐬𝐚𝐡𝐚𝐧𝐚𝐲𝐚𝟐𝟎𝟎𝟔*
+*🔰IDID:* 125999503
+*🔰Node IDD:* U_kgDOB4KZjw
+*🔰Profile URL:* https://avatars.githubusercontent.com/u/125999503?v=4
+*🔰GitHub URL:* https://github.com/MrMasterOfc
+*🔰Adminin:* No
+*🔰Companyy:* MASTER MIND
+*🔰Blogg:* https://mr-sahan-ofc.vercel.app/index.html
+*🔰Locationon:* Asia/Colombo
+*🔰Emailil:* N/A
+*🔰Public Repositorieses:* 13
 _________________________________________
 `;
 
