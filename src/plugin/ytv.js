@@ -1,9 +1,19 @@
 import ytdl from 'ytdl-core';
+import yts from 'yt-search';
 import pkg, { prepareWAMessageMedia } from '@whiskeysockets/baileys';
 const { generateWAMessageFromContent, proto } = pkg;
 
 const videoMap = new Map();
-let videoIndex = 1; 
+let videoIndex = 1;
+
+const formats = [
+  { itag: 160, quality: '144P' },
+  { itag: 133, quality: '240p' },
+  { itag: 134, quality: '360p' },
+  { itag: 135, quality: '480p' },
+  { itag: 136, quality: '720p' },
+  { itag: 137, quality: '1080p' }
+];
 
 const song = async (m, Matrix) => {
   let selectedListId;
@@ -24,26 +34,18 @@ const song = async (m, Matrix) => {
   const prefix = prefixMatch ? prefixMatch[0] : '/';
   const cmd = m.body.startsWith(prefix) ? m.body.slice(prefix.length).split(' ')[0].toLowerCase() : '';
   const text = m.body.slice(prefix.length + cmd.length).trim();
-  
+
   const validCommands = ['ytv'];
 
   if (validCommands.includes(cmd)) {
     if (!text || !ytdl.validateURL(text)) {
-      return m.reply('Please provide a valid YouTube URL.');
+      return m.reply('*Please provide a valid YouTube URL.*');
     }
 
     try {
-      await m.React("⬇️");
-
+      await m.React("💼");
 
       const info = await ytdl.getInfo(text);
-      const formats = ytdl.filterFormats(info.formats, 'videoandaudio');
-
-      if (formats.length === 0) {
-        m.reply('No downloadable formats found.');
-        await m.React("❌");
-        return;
-      }
 
       const videoDetails = {
         title: info.videoDetails.title,
@@ -51,20 +53,23 @@ const song = async (m, Matrix) => {
         views: info.videoDetails.viewCount,
         likes: info.videoDetails.likes,
         uploadDate: formatDate(info.videoDetails.uploadDate),
-        duration: formatDuration(info.videoDetails.lengthSeconds)
+        duration: formatDuration(info.videoDetails.lengthSeconds),
+        thumbnailUrl: info.videoDetails.thumbnails[0].url,
+        videoUrl: info.videoDetails.video_url
       };
 
-      const qualityButtons = await Promise.all(formats.map(async (format, index) => {
+      const videoInfo = await yts({ videoId: ytdl.getURLVideoID(videoDetails.videoUrl) });
+
+      const qualityButtons = formats.map((format, index) => {
         const uniqueId = videoIndex + index;
-        const size = format.contentLength ? formatSize(format.contentLength) : 'Unknown size';
-        videoMap.set(uniqueId, { ...format, videoId: info.videoDetails.videoId, ...videoDetails, size });
+        videoMap.set(uniqueId, { ...format, videoId: info.videoDetails.videoId, ...videoDetails });
         return {
           "header": "",
-          "title": `${format.qualityLabel} (${format.container}) - ${size}`,
-          "description": `Bitrate: ${format.bitrate}`,
-          "id": `quality_${uniqueId}` 
+          "title": `${format.quality}`,
+          "description": `Select ${format.quality} quality`,
+          "id": `quality_${uniqueId}`
         };
-      }));
+      });
 
       const msg = generateWAMessageFromContent(m.from, {
         viewOnceMessage: {
@@ -75,17 +80,17 @@ const song = async (m, Matrix) => {
             },
             interactiveMessage: proto.Message.InteractiveMessage.create({
               body: proto.Message.InteractiveMessage.Body.create({
-                text: `👨‍💻ＭＡＳＴＥＲ-ＭＤ-Ｖ3👨‍💻\n⬇️𝚅𝙸𝙳𝙴𝙾 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁⬇️\n*🔍Title:* ${videoDetails.title}\n*✍️ Author:* ${videoDetails.author}\n*🥸Views:* ${videoDetails.views}\n*👍 Likes:* ${videoDetails.likes}\n*📆 Upload Date:* ${videoDetails.uploadDate}\n*🏮 Duration:* ${videoDetails.duration}\n`
+                text: `Video Downloader\n*🔍Title:* ${videoDetails.title}\n*✍️ Author:* ${videoDetails.author}\n*🥸Views:* ${videoDetails.views}\n*👍 Likes:* ${videoDetails.likes}\n*📆 Upload Date:* ${videoDetails.uploadDate}\n*🏮 Duration:* ${videoDetails.duration}\n`
               }),
               footer: proto.Message.InteractiveMessage.Footer.create({
                 text: "© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ"
               }),
               header: proto.Message.InteractiveMessage.Header.create({
-                ...(await prepareWAMessageMedia({ image: { url: `https://telegra.ph/file/fbbe1744668b44637c21a.jpg` } }, { upload: Matrix.waUploadToServer })),
+                ...(await prepareWAMessageMedia({ image: { url: videoInfo.thumbnail } }, { upload: Matrix.waUploadToServer })),
                 title: "",
                 gifPlayback: true,
                 subtitle: "",
-                hasMediaAttachment: false 
+                hasMediaAttachment: false
               }),
               nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
                 buttons: [
@@ -95,7 +100,7 @@ const song = async (m, Matrix) => {
                       title: "🎬 Select a video quality",
                       sections: [
                         {
-                          title: "♂️ Available Qualities",
+                          title: "📥 Available Qualities",
                           highlight_label: "💡 Choose Quality",
                           rows: qualityButtons
                         },
@@ -108,6 +113,11 @@ const song = async (m, Matrix) => {
                 mentionedJid: [m.sender],
                 forwardingScore: 999,
                 isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                  newsletterJid: '120363249960769123@newsletter',
+                  newsletterName: "MASTER-MD-V3",
+                  serverMessageId: 143
+                }
               }
             }),
           },
@@ -127,27 +137,30 @@ const song = async (m, Matrix) => {
     }
   } else if (selectedId) {
     const key = parseInt(selectedId.replace('quality_', ''));
-    const selectedFormat = videoMap.get(key);
+    const selectedQuality = videoMap.get(key);
 
-    if (selectedFormat) {
+    if (selectedQuality) {
       try {
-        const videoUrl = `https://www.youtube.com/watch?v=${selectedFormat.videoId}`;
-        const videoStream = ytdl(videoUrl, { format: selectedFormat });
-        const finalVideoBuffer = await streamToBuffer(videoStream);
+        const videoUrl = `https://www.youtube.com/watch?v=${selectedQuality.videoId}`;
 
-        const duration = selectedFormat.duration;
-        const size = selectedFormat.size;
+        
+        const videoStream = ytdl(videoUrl, { filter: 'audioandvideo', quality: selectedQuality.itag });
+       
+
+        const finalVideoBuffer = await streamToBuffer(videoStream);
 
         await Matrix.sendMessage(m.from, {
           document: finalVideoBuffer,
           mimetype: 'video/mp4',
-          caption: `🔰Title: ${selectedFormat.title}\n🔰Author: ${selectedFormat.author}\n🔰Views: ${selectedFormat.views}\n🔰Likes: ${selectedFormat.likes}\n🔰Upload Date: ${selectedFormat.uploadDate}\n🔰Duration: ${duration}\n🔰Size: ${size}\n\n> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ`
-        }, { quoted: m });
+          fileName: `${selectedQuality.title}`,
+          caption: `> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ\n\n*${selectedQuality.quality}*`
+        }, {
+          quoted: m
+        });
       } catch (error) {
         console.error("Error fetching video details:", error);
-        m.reply('Error fetching video details.');
+        m.reply(`Error fetching video details: ${error.message}`);
       }
-    } else {
     }
   }
 };
@@ -157,13 +170,6 @@ const formatDuration = (seconds) => {
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
   return `${h}h ${m}m ${s}s`;
-};
-
-const formatSize = (size) => {
-  if (size < 1024) return `${size.toFixed(2)} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
-  if (size < 1024 * 1024 * 1024) return `${(size / 1024 / 1024).toFixed(2)} MB`;
-  return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`;
 };
 
 const formatDate = (date) => {
