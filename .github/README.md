@@ -87,13 +87,13 @@
     <img src="https://telegra.ph/file/951c7ead81ade5612d70d.jpg" width="200px">
   </a>
     
-[`Owner`](https://wa.me/+94720797915)
+[`Mr Sahan Ofc`](https://wa.me/+94720797915)
 <br>
 <p align="left">
 <a href="https://github.com/ravidiadithya">
     <img src="https://telegra.ph/file/9f2b1fe4fd109d81dfc19.jpg" width="200px">
   </a>
     
-  2: [`Ravindu Adithya`](https://wa.me/+94768680481)
+  2: [`Mr Ravindu Ofc`](https://wa.me/+94768680481)
 
 
