@@ -55,6 +55,20 @@ _________________________________________
             display_text: "MENU",
             id: `.menu`
           })
+        },
+     {
+          "name": "quick_reply",
+          "buttonParamsJson": JSON.stringify({
+            display_text: "PING",
+            id: `.ping`
+          })
+        },
+     {
+          "name": "cta_url",
+          "buttonParamsJson": JSON.stringify({
+            display_text: "SITE",
+            url: `https://mr-sahan-ofc.vercel.app/`
+          })
         }
         ];
 
