@@ -12,14 +12,14 @@ const alive = async (m, Matrix) => {
   const cmd = m.body.startsWith(prefix) ? m.body.slice(prefix.length).toLowerCase() : '';
     if (['alive', 'uptime', 'runtime'].includes(cmd)) {
 
-  const uptimeMessage = `*👨‍💻ＭＡＳＴＥＲ-ＭＤ-Ｖ3 ＩＳ ＡＬＩＶＥ👨‍💻*
+  const uptimeMessage = `*👨‍💻ＭＩＣＲＯ-ＭＤ ＩＳ ＡＬＩＶＥ👨‍💻*
 _________________________________________
 
 *📆 Day: ${days} Day*
 *🕰️Hour: ${hours} Hour*
 *⏳ Minute: ${minutes} Minute*
 *⏲️ Second: ${seconds} Second*
-*👨‍💻Developer: MASTER MIND*
+*👨‍💻Developer: NETHMIKA OFFICIAL*
 _________________________________________
 `;
 
@@ -34,8 +34,8 @@ _________________________________________
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "PING",
-            id: `.ping`
+            display_text: "SPEED",
+            id: `.Nethmika`
           })
         }
         ];
@@ -52,7 +52,7 @@ _________________________________________
             text: uptimeMessage
           }),
           footer: proto.Message.InteractiveMessage.Footer.create({
-            text: "© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ"
+            text: "© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ ɴᴇᴛʜᴀ 𝐎ꜰᴄ"
           }),
           header: proto.Message.InteractiveMessage.Header.create({
             title: "",
