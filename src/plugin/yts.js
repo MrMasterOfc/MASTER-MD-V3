@@ -76,7 +76,7 @@ const song = async (m, Matrix) => {
             },
             interactiveMessage: proto.Message.InteractiveMessage.create({
               body: proto.Message.InteractiveMessage.Body.create({
-                text: `ＭＡＳＴＥＲ-ＭＤ-Ｖ3 Video Downloader\n\n`
+                text: `👨‍💻ＭＡＳＴＥＲ-ＭＤ-Ｖ3👨‍💻\n 🔰Video Downloader🔰\n\n`
               }),
               footer: proto.Message.InteractiveMessage.Footer.create({
                 text: "© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ"
