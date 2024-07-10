@@ -69,6 +69,7 @@
 
 [![Sahan](https://img.shields.io/badge/Master_deploy_on_codespace-000000?style=for-the-badge&logo=github&logoColor=white&buttcode=1n2i3m4a)](https://github.com/codespaces/)
 
+[![Sahan](https://img.shields.io/badge/Master_deploy_on_render-000000?style=for-the-badge&logo=render&logoColor=white&buttcode=1n2i3m4a)](https://docs.render.com/free)
 <br>
 
 <a href="https://mr-sahan-ofc.vercel.app/"><img src="https://img.shields.io/badge/MY-SITE-black" alt="MY SITE" width="100"></a>
