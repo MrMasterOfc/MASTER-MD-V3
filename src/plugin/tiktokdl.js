@@ -136,9 +136,9 @@ const tiktokCommand = async (m, Matrix) => {
           const fileSizeInMB = finalMediaBuffer.length / (1024 * 1024);
 
           if (type === 'video' && fileSizeInMB <= 300) {
-            content = { video: finalMediaBuffer, mimetype: 'video/mp4', caption: '> © Powered by 𝞢𝙏𝞖𝞘𝞦-𝞛𝘿' };
+            content = { video: finalMediaBuffer, mimetype: 'video/mp4', caption: '> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ' };
           } else if (type === 'audio' && fileSizeInMB <= 300) {
-            content = { audio: finalMediaBuffer, mimetype: 'audio/mpeg', caption: '> © Powered by 𝞢𝙏𝞖𝞘𝞦-𝞛𝘿' };
+            content = { audio: finalMediaBuffer, mimetype: 'audio/mpeg', caption: '> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ' };
           }
 
           await Matrix.sendMessage(m.from, content, { quoted: m });
