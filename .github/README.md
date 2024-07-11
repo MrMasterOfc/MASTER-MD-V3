@@ -71,7 +71,9 @@
 
 [![Sahan](https://img.shields.io/badge/Master_deploy_on_replit-F26207?style=for-the-badge&logo=replit&logoColor=white&buttcode=1n2i3m4a)](https://replit.com/)
 
-[![Sahan](https://img.shields.io/badge/Master_deploy_on_scalingo-F26207?style=for-the-badge&logo=scalingo&logoColor=white&buttcode=1n2i3m4a)](https://dashboard.scalingo.com/)
+[![Sahan](https://img.shields.io/badge/Master_deploy_on_scalingo-000000?style=for-the-badge&logo=scalingo&logoColor=white&buttcode=1n2i3m4a)](https://dashboard.scalingo.com/)
+
+
 
 
 
