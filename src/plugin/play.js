@@ -1,10 +1,10 @@
-import ytdl from 'ytdl-core';
 import ytSearch from 'yt-search';
-import pkg, { prepareWAMessageMedia } from '@whiskeysockets/baileys';
-const { generateWAMessageFromContent, proto } = pkg;
+import pkg from '@whiskeysockets/baileys';
+const { generateWAMessageFromContent, proto, prepareWAMessageMedia } = pkg;
+import ytdl from '@distube/ytdl-core';
 
 const searchResultsMap = new Map();
-let searchIndex = 1; 
+let searchIndex = 1;
 
 const playcommand = async (m, Matrix) => {
   let selectedListId;
@@ -30,15 +30,14 @@ const playcommand = async (m, Matrix) => {
 
   if (validCommands.includes(cmd)) {
     if (!text) {
-      return m.reply('Please provide a search query.');
+      return m.reply('*Please provide a search query*');
     }
 
     try {
-      await m.React("⬇️");
+      await m.React("🎶");
 
- 
       const searchResults = await ytSearch(text);
-      const videos = searchResults.videos.slice(0, 5); 
+      const videos = searchResults.videos.slice(0, 5);
 
       if (videos.length === 0) {
         m.reply('No results found.');
@@ -46,51 +45,51 @@ const playcommand = async (m, Matrix) => {
         return;
       }
 
-
       videos.forEach((video, index) => {
         const uniqueId = searchIndex + index;
         searchResultsMap.set(uniqueId, video);
       });
-
 
       const currentResult = searchResultsMap.get(searchIndex);
       const buttons = [
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "🎧 Audio",
+            display_text: "🎧 AUDIO",
             id: `media_audio_${searchIndex}`
           })
         },
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "🎥 Video",
+            display_text: "🎥 VIDEO",
             id: `media_video_${searchIndex}`
           })
         },
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "🎵 Audio Document",
+            display_text: "🎵 AUDIO DOCUMENT",
             id: `media_audiodoc_${searchIndex}`
           })
         },
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "📽️ Video Document",
+            display_text: "🎦 VIDEO DOCUMENT",
             id: `media_videodoc_${searchIndex}`
           })
         },
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "⏩ Next",
+            display_text: "⏩ NEXT",
             id: `next_${searchIndex + 1}`
           })
         }
       ];
+
+      const thumbnailUrl = currentResult.thumbnail;
 
       const msg = generateWAMessageFromContent(m.from, {
         viewOnceMessage: {
@@ -101,13 +100,13 @@ const playcommand = async (m, Matrix) => {
             },
             interactiveMessage: proto.Message.InteractiveMessage.create({
               body: proto.Message.InteractiveMessage.Body.create({
-                text: `*👨‍💻ＭＡＳＴＥＲ-ＭＤ-Ｖ3👨‍💻*\n▬▬▬▬▬▬▬▬▬▬▬\n*⬇️𝚂𝙾𝙽𝙶 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁⬇️*\n\n*🔰Title:* ${currentResult.title}\n\n*🔰Author:* ${currentResult.author.name}\n\n*🔰Views:* ${currentResult.views}\n\n*🔰Duration:* ${currentResult.timestamp}\n\n*🔰Uploaded:* ${currentResult.ago}\n\n*🔰Link:* ${currentResult.url}\n`
+                text: `*👨‍💻ＭＡＳＴＥＲ-ＭＤ-Ｖ3👨‍💻*\n▬▬▬▬▬▬▬▬▬▬▬\n*⬇️𝚂𝙾𝙽𝙶 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁⬇️*\n\n*🔰Title:* ${currentResult.title}\n\n*🔰Author:* ${currentResult.author.name}\n\n*🔰Views:* ${currentResult.views}\n\n*🔰Duration:* ${currentResult.timestamp}\n\n*🔰Uploaded:* ${currentResult.ago}\n\n*🔰Link:* ${currentResult.video_id}\n`
               }),
               footer: proto.Message.InteractiveMessage.Footer.create({
                 text: "© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ"
               }),
               header: proto.Message.InteractiveMessage.Header.create({
-                 ...(await prepareWAMessageMedia({ image: { url: `https://telegra.ph/file/9c637284e624c1c6ffe7f.jpg` } }, { upload: Matrix.waUploadToServer })),
+                ...(await prepareWAMessageMedia({ image: { url: thumbnailUrl } }, { upload: Matrix.waUploadToServer })),
                 title: "",
                 gifPlayback: true,
                 subtitle: "",
@@ -131,13 +130,13 @@ const playcommand = async (m, Matrix) => {
       });
       await m.React("✅");
 
-      searchIndex += 1; 
+      searchIndex += 1;
     } catch (error) {
       console.error("Error processing your request:", error);
       m.reply('Error processing your request.');
       await m.React("❌");
     }
-  } else if (selectedId) { 
+  } else if (selectedId) {
     if (selectedId.startsWith('next_')) {
       const nextIndex = parseInt(selectedId.replace('next_', ''));
       const currentResult = searchResultsMap.get(nextIndex);
@@ -149,39 +148,41 @@ const playcommand = async (m, Matrix) => {
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "🎧 Audio",
+            display_text: "🎧 AUDIO",
             id: `media_audio_${nextIndex}`
           })
         },
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "🎥 Video",
+            display_text: "🎥 VIDEO",
             id: `media_video_${nextIndex}`
           })
         },
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "🎵 Audio Document",
+            display_text: "🎵 AUDIO DOCUMENT",
             id: `media_audiodoc_${nextIndex}`
           })
         },
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "📽️ Video Document",
+            display_text: "🎦 VIDEO DOCUMENT",
             id: `media_videodoc_${nextIndex}`
           })
         },
         {
           "name": "quick_reply",
           "buttonParamsJson": JSON.stringify({
-            display_text: "⏩ Next",
+            display_text: "⏩ NEXT",
             id: `next_${nextIndex + 1}`
           })
         }
       ];
+
+      const thumbnailUrl = currentResult.thumbnail;
 
       const msg = generateWAMessageFromContent(m.from, {
         viewOnceMessage: {
@@ -192,13 +193,13 @@ const playcommand = async (m, Matrix) => {
             },
             interactiveMessage: proto.Message.InteractiveMessage.create({
               body: proto.Message.InteractiveMessage.Body.create({
-                text: `*👨‍💻ＭＡＳＴＥＲ-ＭＤ-Ｖ3👨‍💻*\n▬▬▬▬▬▬▬▬▬▬▬\n*⬇️𝚂𝙾𝙽𝙶 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁⬇️*\n\n*🔰Title:* ${currentResult.title}\n\n*🔰Author:* ${currentResult.author.name}\n\n*🔰Views:* ${currentResult.views}\n\n*🔰Duration:* ${currentResult.timestamp}\n\n*🔰Uploaded:* ${currentResult.ago}\n\n*🔰Link:* ${currentResult.url}\n`
+                text: `*👨‍💻ＭＡＳＴＥＲ-ＭＤ-Ｖ3👨‍💻*\n▬▬▬▬▬▬▬▬▬▬▬\n*⬇️𝚂𝙾𝙽𝙶 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁⬇️*\n\n*🔰Title:* ${currentResult.title}\n\n*🔰Author:* ${currentResult.author.name}\n\n*🔰Views:* ${currentResult.views}\n\n*🔰Duration:* ${currentResult.timestamp}\n\n*🔰Uploaded:* ${currentResult.ago}\n\n*🔰Link:* ${currentResult.video_id}\n`
               }),
               footer: proto.Message.InteractiveMessage.Footer.create({
                 text: "© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ"
               }),
               header: proto.Message.InteractiveMessage.Header.create({
-                 ...(await prepareWAMessageMedia({ image: { url: `https://telegra.ph/file/9c637284e624c1c6ffe7f.jpg` } }, { upload: Matrix.waUploadToServer })),
+                ...(await prepareWAMessageMedia({ image: { url: thumbnailUrl } }, { upload: Matrix.waUploadToServer })),
                 title: "",
                 gifPlayback: true,
                 subtitle: "",
@@ -231,29 +232,58 @@ const playcommand = async (m, Matrix) => {
           const videoUrl = selectedMedia.url;
           let finalMediaBuffer, mimeType, content;
 
-          const stream = ytdl(videoUrl, { filter: type === 'audio' || type === 'audiodoc' ? 'audioonly' : 'video' });
+          const stream = ytdl(videoUrl, { filter: type === 'audio' || type === 'audiodoc' ? 'audioonly' : 'videoandaudio' });
 
-          if (type === 'audio' || type === 'audiodoc') {
-            finalMediaBuffer = await getStreamBuffer(stream);
-            mimeType = 'audio/mp3';
-          } else {
-            finalMediaBuffer = await getStreamBuffer(stream);
-            mimeType = 'video/mp4';
+          finalMediaBuffer = await getStreamBuffer(stream);
+          mimeType = type === 'audio' || type === 'audiodoc' ? 'audio/mpeg' : 'video/mp4';
+
+          if (type === 'audio') {
+            content = {
+              audio: finalMediaBuffer,
+              mimetype: 'audio/mpeg',
+              ptt: false,
+              waveform: [100, 0, 100, 0, 100, 0, 100],
+              fileName: `${selectedMedia.title}.mp3`,
+              contextInfo: {
+                mentionedJid: [m.sender],
+                externalAdReply: {
+                  title: "↺ |◁   II   ▷|   ♡",
+                  body: `Now playing: ${selectedMedia.title}`,
+                  thumbnailUrl: selectedMedia.thumbnail,
+                  sourceUrl: videoUrl,
+                  mediaType: 1,
+                  renderLargerThumbnail: true
+                }
+              }
+            };
+            await Matrix.sendMessage(m.from, content, { quoted: m });
+          } else if (type === 'video') {
+            content = {
+              video: finalMediaBuffer,
+              mimetype: mimeType,
+              caption: `> TITLE: ${selectedMedia.title}\n\n*© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ*`
+            };
+            await Matrix.sendMessage(m.from, content, { quoted: m });
+          } else if (type === 'audiodoc' || type === 'videodoc') {
+            content = {
+              document: finalMediaBuffer,
+              mimetype: mimeType,
+              fileName: `${selectedMedia.title}.${type === 'audiodoc' ? 'mp3' : 'mp4'}`,
+              caption: `© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ`,
+              contextInfo: {
+                externalAdReply: {
+                  showAdAttribution: true,
+                  title: selectedMedia.title,
+                  body: 'MASTER-MD',
+                  thumbnailUrl: selectedMedia.thumbnail,
+                  sourceUrl: selectedMedia.url,
+                  mediaType: 1,
+                  renderLargerThumbnail: true
+                }
+              }
+            };
+            await Matrix.sendMessage(m.from, content, { quoted: m });
           }
-
-          const fileSizeInMB = finalMediaBuffer.length / (1024 * 1024);
-
-          if (type === 'audio' && fileSizeInMB <= 300) {
-            content = { audio: finalMediaBuffer, mimetype: 'audio/mpeg', caption: '© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ' };
-          } else if (type === 'video' && fileSizeInMB <= 300) {
-            content = { video: finalMediaBuffer, mimetype: 'video/mp4', caption: '© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ' };
-          } else if (type === 'audiodoc') {
-            content = { document: finalMediaBuffer, mimetype: 'audio/mp3', fileName: `${selectedMedia.title}.mp3` };
-          } else if (type === 'videodoc') {
-            content = { document: finalMediaBuffer, mimetype: 'video/mp4', fileName: `${selectedMedia.title}.mp4`, caption: `Downloading video: ${selectedMedia.title}` };
-          }
-
-          await Matrix.sendMessage(m.from, content, { quoted: m });
         } catch (error) {
           console.error("Error processing your request:", error);
           m.reply('Error processing your request.');
