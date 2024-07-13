@@ -1,18 +1,17 @@
 {
   "name": "MASTER-MD",
   "version": "10.8.1",
-  "description": "Master md whatsApp user bot created by mr sahan ofc",
-  "main": "src/index.js",
+  "description": "MASTER-MD latest multi device whatsapp bot",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "pm2 start src/index.js --deep-monitoring --attach --name MASTER-MD",
-    "stop": "pm2 stop MASTER-MD",
-    "restart": "pm2 restart MASTER-MD"
+    "start": "pm2 start index.js --deep-monitoring --attach --name Ethix-MD"
   },
   "keywords": ["master-md", "whatsapp-bot", "whatsapp md bot"],
-  "author": "Sahan_Pedaa",
+  "author": "Sahan-Pedaa",
   "license": "ISC",
   "dependencies": {
+    "@distube/ytdl-core": "^4.13.5",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@google/generative-ai": "^0.9.0",
     "@hapi/boom": "^10.0.1",
