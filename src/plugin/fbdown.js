@@ -3,7 +3,6 @@ const { generateWAMessageFromContent, proto } = pkg;
 import pkgg from 'nayan-media-downloader';
 const { ndown } = pkgg;
 
-
 const fbSearchResultsMap = new Map();
 let fbSearchIndex = 1; 
 
@@ -31,12 +30,11 @@ const facebookCommand = async (m, Matrix) => {
 
   if (validCommands.includes(cmd)) {
     if (!text) {
-      return m.reply('Please provide a Facebook video URL.');
+      return m.reply('*Please provide a Facebook video URL.*');
     }
 
     try {
-      await m.React("⬇️");
-
+      await m.React("🎁");
 
       const fbData = await ndown(text);
       if (!fbData.status) {
@@ -47,23 +45,22 @@ const facebookCommand = async (m, Matrix) => {
 
       fbSearchResultsMap.set(fbSearchIndex, fbData);
 
-      const sections = [{
-        title: 'Video Qualities',
-        rows: fbData.data.map((video, index) => ({
-          header: '',
-          title: `📥 Download ${video.resolution}`,
-          description: '',
+      const buttons = fbData.data.map((video, index) => ({
+        "name": "quick_reply",
+        "buttonParamsJson": JSON.stringify({
+          display_text: `📥 Download ${video.resolution}`,
           id: `media_${index}_${fbSearchIndex}`
-        }))
-      }];
-
-      const buttons = [{
-        name: "single_select",
-        buttonParamsJson: JSON.stringify({
-          title: '♂️ Select Quality',
-          sections: sections
         })
-      }];
+      }));
+
+      const sections = fbData.data.map((video) => ({
+        title: 'Video Qualities',
+        rows: [{
+          title: `📥 Download ${video.resolution}`,
+          description: `Resolution: ${video.resolution} | Size: ${(video.size / (1024 * 1024)).toFixed(2)} MB`,
+          id: `media_${fbSearchIndex}_${video.resolution}`
+        }]
+      }));
 
       const msg = generateWAMessageFromContent(m.from, {
         viewOnceMessage: {
@@ -74,13 +71,13 @@ const facebookCommand = async (m, Matrix) => {
             },
             interactiveMessage: proto.Message.InteractiveMessage.create({
               body: proto.Message.InteractiveMessage.Body.create({
-                text: `👨‍💻ＭＡＳＴＥＲ-ＭＤ-Ｖ3👨‍💻\n⬇️𝙵𝙱 𝚅𝙸𝙳𝙴𝙾 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁⬇️\n🔍 Select the desired video quality to download.\n\n📌 Choose an option to download.\n\n`
+                text: `*👨‍💻MASTER-MD👨‍💻* \n*FACEBOOK POST DOWNLOADER*\n\n> *🔰TITLE*: ${fbData.title}\n> *🔰SIZE*: ${(fbData.size / (1024 * 1024)).toFixed(2)} MB`
               }),
               footer: proto.Message.InteractiveMessage.Footer.create({
                 text: "© 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ"
               }),
               header: proto.Message.InteractiveMessage.Header.create({
-                 ...(await prepareWAMessageMedia({ image: { url: `https://telegra.ph/file/9c637284e624c1c6ffe7f.jpg` } }, { upload: Matrix.waUploadToServer })),
+                ...(await prepareWAMessageMedia({ image: { url: `https://telegra.ph/file/83ae294a17351afb2773d.jpg` } }, { upload: Matrix.waUploadToServer })),
                 title: "",
                 gifPlayback: true,
                 subtitle: "",
@@ -128,7 +125,11 @@ const facebookCommand = async (m, Matrix) => {
           const fileSizeInMB = finalMediaBuffer.length / (1024 * 1024);
 
           if (fileSizeInMB <= 300) {
-            content = { video: finalMediaBuffer, mimetype: 'video/mp4', caption: '> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ' };
+            content = { 
+              video: finalMediaBuffer, 
+              mimetype: 'video/mp4', 
+              caption: '> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ',
+            };
             await Matrix.sendMessage(m.from, content, { quoted: m });
           } else {
             await m.reply('The video file size exceeds 300MB.');
