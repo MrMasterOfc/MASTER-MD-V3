@@ -1,4 +1,4 @@
-import ytdl from 'ytdl-core';
+import ytdl from '@distube/ytdl-core';
 import yts from 'yt-search';
 
 const video = async (m, Matrix) => {
@@ -7,22 +7,39 @@ const video = async (m, Matrix) => {
   const cmd = m.body.startsWith(prefix) ? m.body.slice(prefix.length).split(' ')[0].toLowerCase() : '';
   const text = m.body.slice(prefix.length + cmd.length).trim();
 
-  const validCommands = ['video', 'ytmp4', 'vid'];
+  const validCommands = ['video', 'ytmp4', 'vid', 'ytmp4doc'];
 
-   if (validCommands.includes(cmd)) {
-    if (!text) return m.reply('Give a YouTube URL or search query.');
+  if (validCommands.includes(cmd)) {
+    if (!text) return m.reply('*Give a YouTube URL or search query.*');
 
     try {
-      await m.React("⬇️");
+      await m.React("🕘");
 
-      // Check if the input is a valid YouTube URL
       const isUrl = ytdl.validateURL(text);
       await m.React("⬇️");
-      
-      if (isUrl) {
-        // If it's a URL, directly use ytdl-core for audio and video
-        const videoStream = ytdl(text, { filter: 'audioandvideo', quality: 'highest' });
 
+      const sendVideoMessage = async (videoInfo, finalVideoBuffer) => {
+        if (cmd === 'ytmp4doc') {
+          const docMessage = {
+            document: finalVideoBuffer,
+            mimetype: 'video/mp4',
+            fileName: `${videoInfo.title}.mp4`,
+            caption: '> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ',
+          };
+          await Matrix.sendMessage(m.from, docMessage, { quoted: m });
+        } else {
+          const videoMessage = {
+            video: finalVideoBuffer,
+            mimetype: 'video/mp4',
+            caption: '> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ',
+          };
+          await Matrix.sendMessage(m.from, videoMessage, { quoted: m });
+        }
+        await m.React("✅");
+      };
+
+      if (isUrl) {
+        const videoStream = ytdl(text, { filter: 'audioandvideo', quality: 'highest' });
         const videoBuffer = [];
 
         videoStream.on('data', (chunk) => {
@@ -32,11 +49,8 @@ const video = async (m, Matrix) => {
         videoStream.on('end', async () => {
           try {
             const finalVideoBuffer = Buffer.concat(videoBuffer);
-
             const videoInfo = await yts({ videoId: ytdl.getURLVideoID(text) });
-    
-            await Matrix.sendMessage(m.from, { video: finalVideoBuffer, mimetype: 'video/mp4', caption: '> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ' }, { quoted: m });
-            await m.React("✅");
+            await sendVideoMessage(videoInfo, finalVideoBuffer);
           } catch (err) {
             console.error('Error sending video:', err);
             m.reply('Error sending video.');
@@ -44,7 +58,6 @@ const video = async (m, Matrix) => {
           }
         });
       } else {
-        // If it's a search query, use yt-search for video
         const searchResult = await yts(text);
         const firstVideo = searchResult.videos[0];
         await m.React("⬇️");
@@ -56,7 +69,6 @@ const video = async (m, Matrix) => {
         }
 
         const videoStream = ytdl(firstVideo.url, { filter: 'audioandvideo', quality: 'highest' });
-
         const videoBuffer = [];
 
         videoStream.on('data', (chunk) => {
@@ -66,9 +78,7 @@ const video = async (m, Matrix) => {
         videoStream.on('end', async () => {
           try {
             const finalVideoBuffer = Buffer.concat(videoBuffer);
-          
-            await Matrix.sendMessage(m.from, { video: finalVideoBuffer, mimetype: 'video/mp4', caption: '> © 𝐂ʀᴇᴀᴛᴇᴅ 𝐁ʏ 𝐌ʀ 𝐒ᴀʜᴀɴ 𝐎ꜰᴄ' }, { quoted: m });
-            await m.React("✅");
+            await sendVideoMessage(firstVideo, finalVideoBuffer);
           } catch (err) {
             console.error('Error sending video:', err);
             m.reply('Error sending video.');
